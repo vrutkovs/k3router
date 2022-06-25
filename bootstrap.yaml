@@ -9,6 +9,8 @@ metadata:
   name: my-argocd-operator
   namespace: operators
 spec:
+  source: operatorhubio-catalog
+  sourceNamespace: olm
   name: argocd-operator
   config:
     env:
