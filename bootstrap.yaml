@@ -23,8 +23,6 @@ metadata:
   name: gitops
   namespace: argocd
 spec:
-  extraConfig:
-    clusterResources: true
   server:
     host: gitops.192.168.0.100.nip.io
     ingress:
