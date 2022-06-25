@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: openshift-console
+  name: openshift-console
+  namespace: openshift-console
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: openshift-console
+  template:
+    metadata:
+      labels:
+        app: openshift-console
+    spec:
+      containers:
+      - args:
+        - /opt/bridge/bin/bridge
+        - --public-dir=/opt/bridge/static
+        - --listen=http://0.0.0.0:9000
+        - --user-settings-location=localstorage
+        image: quay.io/openshift/origin-console:4.10
+        name: openshift-console
+        ports:
+        - containerPort: 9000

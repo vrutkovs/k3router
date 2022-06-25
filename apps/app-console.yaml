@@ -1,0 +1,17 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: console
+  namespace: argocd
+spec:
+  destination:
+    server: 'https://kubernetes.default.svc'
+  project: default
+  source:
+    path: apps/console
+    repoURL: 'https://github.com/vrutkovs/gitops-routernetes'
+    targetRevision: HEAD
+  syncPolicy:
+    automated: {}
+    syncOptions:
+      - CreateNamespace=true
