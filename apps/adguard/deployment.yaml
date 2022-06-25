@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: adguard
+  name: adguard
+  namespace: adguard
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: adguard
+  template:
+    metadata:
+      labels:
+        app: adguard
+    spec:
+      hostNetwork: true
+      containers:
+      - image: docker.io/adguard/adguardhome:v0.107.7
+        name: adguard
+        securityContext:
+          privileged: true
+        volumeMounts:
+        - mountPath: /opt/adguardhome
+          name: adguard
+      volumes:
+      - name: adguard
+        hostPath:
+          path: /srv/adguard
+          type: DirectoryOrCreate
