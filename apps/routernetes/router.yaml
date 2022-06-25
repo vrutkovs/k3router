@@ -28,11 +28,6 @@ spec:
       zone: outside
       ipv4:
         method: auto
-    - name: wlp61s0
-      type: ethernet
-      ipv4:
-        method: manual
-        address: 192.168.100.1/24
   osUpdates:
     enabled: true
     timezone: UTC
