@@ -8,7 +8,11 @@ kind: ArgoCD
 metadata:
   name: gitops
   namespace: argocd
-spec: {}
+spec:
+  server:
+    ingress:
+      enabled: true
+    insecure: true
 ---
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
