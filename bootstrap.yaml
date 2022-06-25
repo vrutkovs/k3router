@@ -10,6 +10,7 @@ metadata:
   namespace: argocd
 spec:
   server:
+    host: gitops.192.168.0.100.nip.io
     ingress:
       enabled: true
     insecure: true
