@@ -3,6 +3,18 @@ kind: Namespace
 metadata:
   name: argocd
 ---
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: my-argocd-operator
+  namespace: operators
+spec:
+  name: argocd-operator
+  config:
+    env:
+    - name: ARGOCD_CLUSTER_CONFIG_NAMESPACES
+      value: argocd
+---
 apiVersion: argoproj.io/v1alpha1
 kind: ArgoCD
 metadata:
