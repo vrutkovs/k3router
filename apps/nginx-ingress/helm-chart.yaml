@@ -21,8 +21,8 @@ spec:
       publishService:
         enabled: false
       metrics:
-        enabled: true
+        enabled: false
         serviceMonitor:
-          enabled: true
+          enabled: false
       config:
         use-forwarded-headers: "true"
