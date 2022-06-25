@@ -25,3 +25,4 @@ spec:
         name: openshift-console
         ports:
         - containerPort: 9000
+      serviceAccount: admin
