@@ -22,10 +22,16 @@ spec:
         securityContext:
           privileged: true
         volumeMounts:
-        - mountPath: /opt/adguardhome
-          name: adguard
+        - mountPath: /opt/adguardhome/work
+          name: work
+        - mountPath: /opt/adguardhome/conf
+          name: conf
       volumes:
-      - name: adguard
+      - name: work
         hostPath:
-          path: /srv/adguard
+          path: /srv/adguard/work
+          type: DirectoryOrCreate
+      - name: conf
+        hostPath:
+          path: /srv/adguard/conf
           type: DirectoryOrCreate
