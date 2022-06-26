@@ -17,7 +17,7 @@ kind: Namespace
 metadata:
   labels:
     argocd.argoproj.io/namespace: gitops
-  name: nginx-ingress
+  name: ingress-nginx
 ---
 apiVersion: v1
 kind: Namespace
