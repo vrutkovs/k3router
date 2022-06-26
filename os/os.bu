@@ -6,6 +6,36 @@ systemd:
       enabled: true
     - name: firewalld.service
       enabled: true
+    - name: autoupdate-os.service
+      enabled: true
+      contents: |
+        [Unit]
+        After=network-online.target
+        Wants=network-online.target
+        Before=systemd-user-sessions.service
+        OnFailure=emergency.target
+        OnFailureJobMode=replace-irreversibly
+
+        [Service]
+        RemainAfterExit=yes
+        Type=oneshot
+        ExecStartPre=/usr/bin/sh -c 'skopeo inspect docker://quay.io/vrutkovs/routernetes-os:latest -n -f "{{.Name}}@{{.Digest}}" > /etc/os-digest'
+        ExecStart=/usr/bin/sh -c "rpm-ostree rebase --experimental ostree-unverified-registry:$(cat /etc/os-digest) --bypass-driver"
+        ExecStartPost=/usr/bin/systemctl --no-block reboot
+        StandardOutput=kmsg+console
+        StandardError=kmsg+console
+
+        [Install]
+        WantedBy=multi-user.target
+    - name: autoupdate-os.timer
+      enabled: true
+      contents: |
+        [Unit]
+        Description=Apply OS updates
+        [Timer]
+        OnCalendar=*-*-* 4:00:00
+        [Install]
+        WantedBy=timers.target
     - name: serial-getty@ttyS0.service
       dropins:
       - name: autologin-core.conf
