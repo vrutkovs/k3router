@@ -2,7 +2,7 @@ variant: fcos
 version: 1.4.0
 systemd:
   units:
-    - name: cockpit.service
+    - name: cockpit.socket
       enabled: true
     - name: firewalld.service
       enabled: true
