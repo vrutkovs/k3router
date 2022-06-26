@@ -36,6 +36,8 @@ systemd:
         OnCalendar=*-*-* 4:00:00
         [Install]
         WantedBy=timers.target
+    - name: zincati.service
+      enabled: false
     - name: serial-getty@ttyS0.service
       dropins:
       - name: autologin-core.conf
