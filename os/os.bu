@@ -2,6 +2,10 @@ variant: fcos
 version: 1.4.0
 systemd:
   units:
+    - name: cockpit.service
+      enabled: true
+    - name: firewalld.service
+      enabled: true
     - name: serial-getty@ttyS0.service
       dropins:
       - name: autologin-core.conf
