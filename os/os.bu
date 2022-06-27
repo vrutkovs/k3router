@@ -48,7 +48,7 @@ systemd:
           ExecStart=-/usr/sbin/agetty --autologin core --noclear %I $TERM
 storage:
   trees:
-    - local: manifests
+    - local: ./manifests
       path: /var/lib/rancher/k3s/server/manifests/gitops
   files:
     - path: /etc/profile.d/systemd-pager.sh
