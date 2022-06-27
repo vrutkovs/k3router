@@ -41,3 +41,7 @@ spec:
           nginx.ingress.kubernetes.io/backend-protocol: HTTP
         hosts:
         - grafana.192.168.0.100.nip.io
+      grafana.ini:
+        auth.anonymous:
+          enabled: true
+          org_role: Viewer
