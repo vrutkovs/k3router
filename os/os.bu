@@ -76,3 +76,11 @@ storage:
       mode: 0644
       contents:
         local: ./no-dns-stub.conf
+    - path: /etc/firewalld/zones/public.xml
+      mode: 0644
+      contents:
+        local: ./firewalld/public.xml
+    - path: /etc/firewalld/zones/internal.xml
+      mode: 0644
+      contents:
+        local: ./firewalld/internal.xml
