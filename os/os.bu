@@ -49,7 +49,7 @@ systemd:
 storage:
   trees:
     - local: ./manifests
-      path: /var/lib/rancher/k3s/server/manifests/gitops
+      path: /srv/gitops-bootstrap
   files:
     - path: /etc/profile.d/systemd-pager.sh
       mode: 0644

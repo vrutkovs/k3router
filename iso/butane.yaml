@@ -26,6 +26,25 @@ systemd:
 
         [Install]
         WantedBy=multi-user.target
+    - name: bootstrap-argocd.service
+      enabled: true
+      contents: |
+        [Unit]
+        Description=Start argocd on first boot
+        Wants=network-online.target
+        After=k3s.service
+        ConditionPathExists=/etc/.k3s-installed
+        ConditionPathExists=!/etc/.argocd-installed
+
+        [Service]
+        Type=oneshot
+        RemainAfterExit=yes
+        ExecStart=/usr/local/bin/bootstrap-argocd.sh
+        Restart=on-failure
+        RestartSec=30
+
+        [Install]
+        WantedBy=multi-user.target
 storage:
   files:
     - path: /etc/hostname
@@ -88,3 +107,12 @@ storage:
           /usr/bin/rpm-ostree rebase --experimental ostree-unverified-registry:$(cat /etc/os-digest) --bypass-driver
           touch /etc/.k3s-installed
           reboot
+    - path: /usr/local/bin/bootstrap-argocd.sh
+      mode: 0755
+      contents:
+        inline: |
+          #!/bin/bash
+          set -e
+          export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
+          /usr/local/bin/kubectl apply -f /srv/gitops-bootstrap
+          touch /etc/.argocd-installed
