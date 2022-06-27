@@ -1,0 +1,30 @@
+apiVersion: helm.cattle.io/v1
+kind: HelmChart
+metadata:
+  name: metrics
+  namespace: metrics
+spec:
+  chart: victoria-metrics-k8s-stack
+  repo: https://victoriametrics.github.io/helm-charts/
+  targetNamespace: metrics
+  version: 0.9.5
+  set:
+  valuesContent: |-
+    fullnameOverride: metrics
+    vmsingle:
+      spec:
+        image:
+          tag: v1.78.0
+        retentionPeriod: "14"
+        replicaCount: 1
+        storage:
+          accessModes:
+            - ReadWriteOnce
+          storageClassName: local-path
+          resources:
+            requests:
+              storage: 20Gi
+      ingress:
+        enabled: true
+        hosts:
+        - metrics.192.168.0.100.nip.io
