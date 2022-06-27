@@ -6,6 +6,8 @@ systemd:
       enabled: true
     - name: firewalld.service
       enabled: true
+    - name: docker.socket
+      mask: true
     - name: autoupdate-os.service
       enabled: true
       contents: |
