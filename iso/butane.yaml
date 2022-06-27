@@ -1,0 +1,90 @@
+variant: fcos
+version: 1.4.0
+passwd:
+  users:
+    - name: core
+      ssh_authorized_keys:
+        - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCn9eViO+t7rKylit3Olrfbz+YSqLp23dFwKbvSdAw7bAaWE9wT5rmNerG4IWmCd58v2NxcyNpAxbvk9z1TPaoILqw1S3pvBJU4ftnIIna3DbgmZbUp76YZKsVLhCvEZxHlWdw0lebwBsdIKT/4fs2H0D1SSjiem47st0ln3PTEF33mmODsLQWAT1KrzJuJI8Hlm/mlLhH5G1LAeWW8vEGtqaevHRkGvoVdPed8i/w97d7qBxklix28kuXQoegE6B317WVHvRpnOdhGgdKymxaKMuxQJ0RmwHRTnkwz5sPGBw1TrzgQfx2benNpRv1t23cUunM2yZ0qrEhc0+G6sGC1 vrutkovs@locahost
+systemd:
+  units:
+    - name: install-k3s.service
+      enabled: true
+      contents: |
+        [Unit]
+        Description=Layer dependencies with rpm-ostree
+        Wants=network-online.target
+        After=network-online.target
+        # We run before `zincati.service` to avoid conflicting rpm-ostree
+        # transactions.
+        Before=zincati.service
+        ConditionPathExists=!/etc/.k3s-installed
+
+        [Service]
+        Type=oneshot
+        RemainAfterExit=yes
+        ExecStart=/usr/local/bin/install-k3s.sh
+
+        [Install]
+        WantedBy=multi-user.target
+storage:
+  files:
+    - path: /etc/hostname
+      mode: 0644
+      contents:
+        inline: |
+          routernetes
+    - path: /usr/local/bin/install-k3s.sh
+      mode: 0755
+      contents:
+        inline: |
+          #!/bin/bash
+          set -e
+          /usr/local/bin/setup-loopback.sh
+          /usr/bin/rpm-ostree install --apply-live https://github.com/k3s-io/k3s-selinux/releases/download/v1.1.stable.1/k3s-selinux-1.1-1.el8.noarch.rpm
+          curl -sfL https://get.k3s.io | sh -s - --disable=traefik --disable=servicelb --flannel-backend=host-gw --flannel-iface=k3s-lo
+          /usr/bin/sleep 30
+          /usr/local/bin/kubectl apply -f https://github.com/rancher/system-upgrade-controller/releases/latest/download/system-upgrade-controller.yaml
+          /usr/local/bin/kubectl wait deployment -n system-upgrade system-upgrade-controller --for condition=Available=True --timeout=24h
+          /usr/local/bin/kubectl apply -f https://raw.githubusercontent.com/routernetes/routernetes/main/k3s/upgrade-plan.yaml
+          /usr/local/bin/install-olm.sh
+    - path: /usr/local/bin/install-olm.sh
+      mode: 0755
+      contents:
+        inline: |
+          #!/bin/bash
+          set -e
+          export ARCH=$(case $(uname -m) in x86_64) echo -n amd64 ;; aarch64) echo -n arm64 ;; *) echo -n $(uname -m) ;; esac)
+          export OS=$(uname | awk '{print tolower($0)}')
+          export OPERATOR_SDK_DL_URL=https://github.com/operator-framework/operator-sdk/releases/latest/download
+          curl -L -o /usr/local/bin/operator-sdk ${OPERATOR_SDK_DL_URL}/operator-sdk_${OS}_${ARCH}
+          chmod +x /usr/local/bin/operator-sdk
+          export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
+          /usr/local/bin/operator-sdk olm install
+          /usr/bin/sleep 30
+          /usr/local/bin/kubectl wait --timeout=24h --for=jsonpath='{.status.connectionState.lastObservedState}'=READY -n olm catalogsource/operatorhubio-catalog
+          /usr/local/bin/kubectl apply -f https://operatorhub.io/install/routernetes-operator.yaml
+          /usr/bin/sleep 30
+          /usr/local/bin/kubectl wait --timeout=24h --for=jsonpath='{.status.state}'=AtLatestKnown -n operators sub/my-routernetes-operator
+          csv=$(/usr/local/bin/kubectl get -n operators sub/my-routernetes-operator -o jsonpath='{.status.installedCSV}')
+          /usr/bin/sleep 30
+          /usr/local/bin/kubectl wait --timeout=24h --for=jsonpath='{.status.phase}'=Succeeded -n operators csv/$csv
+          /usr/local/bin/install-custom-os.sh
+    - path: /usr/local/bin/setup-loopback.sh
+      mode: 0755
+      contents:
+        inline: |
+          #!/bin/bash
+          set -e
+          /usr/bin/systemctl start NetworkManager
+          /usr/bin/nmcli connection add type dummy ifname k3s-lo ipv4.method manual ipv4.addresses 100.64.0.1/32 ipv6.method ignore connection.zone r9s-internal
+          /usr/bin/nmcli connection up dummy-k3s-lo
+    - path: /usr/local/bin/install-custom-os.sh
+      mode: 0755
+      contents:
+        inline: |
+          #!/bin/bash
+          set -e
+          /usr/bin/skopeo inspect docker://quay.io/vrutkovs/routernetes-os:latest -n -f "{{.Name}}@{{.Digest}}" > /etc/os-digest
+          /usr/bin/rpm-ostree rebase --experimental ostree-unverified-registry:$(cat /etc/os-digest) --bypass-driver
+          touch /etc/.k3s-installed
+          reboot
