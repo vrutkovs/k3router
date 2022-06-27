@@ -45,6 +45,9 @@ systemd:
           # Add new Execstart with `-` prefix to ignore failure`
           ExecStart=-/usr/sbin/agetty --autologin core --noclear %I $TERM
 storage:
+  trees:
+    - local: manifests
+      path: /var/lib/rancher/k3s/server/manifests/gitops
   files:
     - path: /etc/profile.d/systemd-pager.sh
       mode: 0644
