@@ -21,6 +21,7 @@ spec:
         - --public-dir=/opt/bridge/static
         - --listen=http://0.0.0.0:9000
         - --user-settings-location=localstorage
+        - --prometheus-public-url=http://metrics.192.168.0.100.nip.io/
         image: quay.io/openshift/origin-console:4.10
         name: openshift-console
         ports:
