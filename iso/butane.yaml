@@ -34,6 +34,7 @@ systemd:
         Wants=network-online.target
         After=k3s.service
         ConditionPathExists=/etc/.k3s-installed
+        ConditionPathExists=/usr/share/gitops-bootstrap
         ConditionPathExists=!/etc/.argocd-installed
 
         [Service]
@@ -114,5 +115,5 @@ storage:
           #!/bin/bash
           set -e
           export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
-          /usr/local/bin/kubectl apply -f /srv/gitops-bootstrap
+          /usr/local/bin/kubectl apply -f /usr/share/gitops-bootstrap
           touch /etc/.argocd-installed
