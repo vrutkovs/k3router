@@ -13,3 +13,5 @@ spec:
     targetRevision: HEAD
   syncPolicy:
     automated: {}
+    retry:
+      limit: 100
