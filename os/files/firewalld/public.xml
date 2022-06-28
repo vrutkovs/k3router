@@ -6,5 +6,4 @@
   <service name="http"/>
   <service name="https"/>
   <port port="9090" protocol="tcp"/>
-  <masquerade/>
 </zone>
