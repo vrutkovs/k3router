@@ -24,11 +24,4 @@ kind: Namespace
 metadata:
   labels:
     argocd.argoproj.io/namespace: gitops
-  name: routernetes
----
-apiVersion: v1
-kind: Namespace
-metadata:
-  labels:
-    argocd.argoproj.io/namespace: gitops
   name: metrics
