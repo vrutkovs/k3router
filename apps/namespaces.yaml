@@ -24,4 +24,4 @@ kind: Namespace
 metadata:
   labels:
     argocd.argoproj.io/namespace: gitops
-  name: metrics
+  name: openshift-monitoring

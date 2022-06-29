@@ -2,11 +2,11 @@ apiVersion: helm.cattle.io/v1
 kind: HelmChart
 metadata:
   name: metrics
-  namespace: metrics
+  namespace: openshift-monitoring
 spec:
   chart: victoria-metrics-k8s-stack
   repo: https://victoriametrics.github.io/helm-charts/
-  targetNamespace: metrics
+  targetNamespace: openshift-monitoring
   version: 0.9.5
   set:
   valuesContent: |-
