@@ -1,0 +1,9 @@
+kind: Secret
+apiVersion: v1
+metadata:
+  name: thanos-querier-oauth-cookie
+  namespace: openshift-monitoring
+data:
+  session_secret: >-
+    MnBYUnBBeGJ6MTJyS28vTnRxbnZXRWN2TjBYVW93b3pHd0t3Y2Foai9DSmllZlU4VkFTWXh0cEZqQT09
+type: Opaque

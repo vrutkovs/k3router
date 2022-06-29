@@ -22,8 +22,19 @@ spec:
         - --listen=http://0.0.0.0:9000
         - --user-settings-location=localstorage
         - --prometheus-public-url=http://metrics.192.168.0.100.nip.io/
+        - --service-ca-file=/var/service-ca/service-ca.crt
         image: quay.io/openshift/origin-console:4.10
         name: openshift-console
         ports:
         - containerPort: 9000
+        volumeMounts:
+          - name: service-ca
+            readOnly: true
+            mountPath: /var/service-ca
       serviceAccount: admin
+      volumes:
+      - name: service-ca
+        configMap:
+          name: service-ca
+          defaultMode: 420
+          optional: true
