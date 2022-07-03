@@ -1,2 +1,3 @@
 /iso/workdir
+/iso/secrets/*
 /iso/secret_manifests/*
