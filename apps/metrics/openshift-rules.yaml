@@ -1,6 +1,8 @@
 apiVersion: operator.victoriametrics.com/v1beta1
 kind: VMRule
 metadata:
+  annotations:
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
   name: metrics-openshift.rules
   namespace: openshift-monitoring
 spec:
