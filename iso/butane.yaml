@@ -57,6 +57,9 @@ storage:
         resize: true
       - size_mib: 0
         label: data
+  trees:
+    - local: ./secret_manifests
+      path: /var/lib/rancher/k3s/server/manifests/secrets
   files:
     - path: /etc/hostname
       mode: 0644
