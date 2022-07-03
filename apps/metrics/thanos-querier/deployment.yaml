@@ -16,9 +16,9 @@ spec:
       serviceAccountName: thanos-querier
       containers:
         - resources:
-          requests:
-            cpu: 1m
-            memory: 10Mi
+            requests:
+              cpu: 1m
+              memory: 10Mi
           name: thanos-proxy
           ports:
             - name: thanos-proxy
@@ -70,10 +70,3 @@ spec:
               path: tls-ca-bundle.pem
           defaultMode: 420
           optional: true
-      strategy:
-        type: RollingUpdate
-        rollingUpdate:
-          maxUnavailable: 25%
-          maxSurge: 25%
-      revisionHistoryLimit: 10
-      progressDeadlineSeconds: 600
