@@ -32,3 +32,10 @@ metadata:
   labels:
     argocd.argoproj.io/namespace: gitops
   name: external-secrets
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: nmstate
+  labels:
+    argocd.argoproj.io/namespace: gitops
