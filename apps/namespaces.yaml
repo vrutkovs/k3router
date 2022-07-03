@@ -31,4 +31,4 @@ kind: Namespace
 metadata:
   labels:
     argocd.argoproj.io/namespace: gitops
-  name: sealed-secrets
+  name: external-secrets
