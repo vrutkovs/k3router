@@ -20,7 +20,7 @@ spec:
         storage:
           accessModes:
             - ReadWriteOnce
-          storageClassName: local-path
+          storageClassName: topolvm-provisioner
           resources:
             requests:
               storage: 20Gi
