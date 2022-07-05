@@ -39,3 +39,11 @@ metadata:
   name: nmstate
   labels:
     argocd.argoproj.io/namespace: gitops
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: topolvm-system
+  labels:
+    argocd.argoproj.io/namespace: gitops
+    topolvm.cybozu.com/webhook: ignore

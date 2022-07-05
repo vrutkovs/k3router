@@ -1,0 +1,27 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: topolvm-mutatingwebhook
+  namespace: topolvm-system
+  labels:
+    helm.sh/chart: topolvm-7.0.0
+    app.kubernetes.io/name: topolvm
+    app.kubernetes.io/instance: topolvm
+    app.kubernetes.io/version: "0.13.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  secretName: topolvm-mutatingwebhook
+  duration: 8760h # 1y
+  issuerRef:
+    group: cert-manager.io
+    kind: Issuer
+    name: topolvm-webhook-ca
+  dnsNames:
+    - topolvm-controller
+    - topolvm-controller.topolvm-system
+    - topolvm-controller.topolvm-system.svc
+  usages:
+    - digital signature
+    - key encipherment
+    - server auth
+    - client auth

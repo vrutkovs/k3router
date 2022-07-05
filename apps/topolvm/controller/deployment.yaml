@@ -1,0 +1,131 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: topolvm-controller
+  namespace: topolvm-system
+  labels:
+    helm.sh/chart: topolvm-7.0.0
+    app.kubernetes.io/name: topolvm
+    app.kubernetes.io/instance: topolvm
+    app.kubernetes.io/version: "0.13.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: controller
+      
+      app.kubernetes.io/name: topolvm
+      app.kubernetes.io/instance: topolvm
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: controller
+        
+        app.kubernetes.io/name: topolvm
+        app.kubernetes.io/instance: topolvm
+    spec:
+      securityContext: 
+        runAsGroup: 10000
+        runAsUser: 10000
+      serviceAccountName: topolvm-controller
+      containers:
+        - name: topolvm-controller
+          image: "ghcr.io/topolvm/topolvm-with-sidecar:0.13.0"
+          command:
+            - /topolvm-controller
+            - --cert-dir=/certs
+          ports:
+            - containerPort: 9443
+              name: webhook
+              protocol: TCP
+            - containerPort: 9808
+              name: healthz
+              protocol: TCP
+            - containerPort: 8081
+              name: readyz
+              protocol: TCP
+            - containerPort: 8080
+              name: metrics
+              protocol: TCP
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: readyz
+              scheme: HTTP
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: healthz
+            failureThreshold: 3
+            initialDelaySeconds: 10
+            timeoutSeconds: 3
+            periodSeconds: 60
+          volumeMounts:
+            - name: socket-dir
+              mountPath: /run/topolvm
+            - name: certs
+              mountPath: /certs
+
+        - name: csi-provisioner
+          image: "ghcr.io/topolvm/topolvm-with-sidecar:0.13.0"
+          command:
+            - /csi-provisioner
+            - --csi-address=/run/topolvm/csi-topolvm.sock
+            - --feature-gates=Topology=true
+            - --leader-election
+            - --leader-election-namespace=topolvm-system
+          volumeMounts:
+            - name: socket-dir
+              mountPath: /run/topolvm
+
+        - name: csi-resizer
+          image: "ghcr.io/topolvm/topolvm-with-sidecar:0.13.0"
+          command:
+            - /csi-resizer
+            - --csi-address=/run/topolvm/csi-topolvm.sock
+            - --leader-election
+            - --leader-election-namespace=topolvm-system
+          volumeMounts:
+            - name: socket-dir
+              mountPath: /run/topolvm
+        - name: csi-snapshotter
+          image: "ghcr.io/topolvm/topolvm-with-sidecar:0.13.0"
+          command:
+            - /csi-snapshotter
+            - --csi-address=/run/topolvm/csi-topolvm.sock
+            - --leader-election
+            - --leader-election-namespace=topolvm-system
+          volumeMounts:
+            - name: socket-dir
+              mountPath: /run/topolvm
+
+        - name: liveness-probe
+          image: "ghcr.io/topolvm/topolvm-with-sidecar:0.13.0"
+          command:
+            - /livenessprobe
+            - --csi-address=/run/topolvm/csi-topolvm.sock
+          volumeMounts:
+            - name: socket-dir
+              mountPath: /run/topolvm
+
+      volumes:
+        - name: certs
+          secret:
+            secretName: topolvm-mutatingwebhook
+        - emptyDir: {}
+          name: socket-dir
+      affinity: 
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: app.kubernetes.io/component
+                    operator: In
+                    values:
+                      - controller
+                  - key: app.kubernetes.io/name
+                    operator: In
+                    values:
+                      - topolvm
+              topologyKey: kubernetes.io/hostname

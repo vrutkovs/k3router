@@ -1,0 +1,16 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: topolvm-provisioner
+  annotations:
+  labels:
+    helm.sh/chart: topolvm-7.0.0
+    app.kubernetes.io/name: topolvm
+    app.kubernetes.io/instance: topolvm
+    app.kubernetes.io/version: "0.13.0"
+    app.kubernetes.io/managed-by: Helm
+provisioner: topolvm.cybozu.com
+parameters:
+  "csi.storage.k8s.io/fstype": "xfs"
+volumeBindingMode: WaitForFirstConsumer
+allowVolumeExpansion: true

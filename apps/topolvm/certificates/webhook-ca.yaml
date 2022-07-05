@@ -1,0 +1,24 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: topolvm-webhook-ca
+  namespace: topolvm-system
+  labels:
+    helm.sh/chart: topolvm-7.0.0
+    app.kubernetes.io/name: topolvm
+    app.kubernetes.io/instance: topolvm
+    app.kubernetes.io/version: "0.13.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  secretName: topolvm-webhook-ca
+  duration: 87600h # 10y
+  issuerRef:
+    group: cert-manager.io
+    kind: Issuer
+    name: topolvm-webhook-selfsign
+  commonName: ca.webhook.topolvm
+  isCA: true
+  usages:
+    - digital signature
+    - key encipherment
+    - cert sign

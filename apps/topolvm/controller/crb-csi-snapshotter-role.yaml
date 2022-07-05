@@ -1,0 +1,18 @@
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: topolvm-csi-snapshotter-role
+  labels:
+    helm.sh/chart: topolvm-7.0.0
+    app.kubernetes.io/name: topolvm
+    app.kubernetes.io/instance: topolvm
+    app.kubernetes.io/version: "0.13.0"
+    app.kubernetes.io/managed-by: Helm
+subjects:
+  - kind: ServiceAccount
+    namespace: topolvm-system
+    name: topolvm-controller
+roleRef:
+  kind: ClusterRole
+  name: topolvm-external-snapshotter-runner
+  apiGroup: rbac.authorization.k8s.io
