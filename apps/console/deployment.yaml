@@ -21,6 +21,7 @@ spec:
         - --public-dir=/opt/bridge/static
         - --listen=http://0.0.0.0:9000
         - --user-settings-location=localstorage
+        - --base-address=http://console.192.168.0.100.nip.io/
         - --prometheus-public-url=http://metrics.192.168.0.100.nip.io/
         - --service-ca-file=/var/service-ca/service-ca.crt
         image: quay.io/openshift/origin-console:4.10
