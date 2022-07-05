@@ -61,11 +61,6 @@ storage:
     - local: ./secret_manifests
       path: /var/lib/rancher/k3s/server/manifests/secrets
   files:
-    - path: /etc/hostname
-      mode: 0644
-      contents:
-        inline: |
-          routernetes
     - path: /etc/rancher/k3s/registries.yaml
       mode: 0644
       contents:
