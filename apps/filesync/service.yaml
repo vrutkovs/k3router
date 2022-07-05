@@ -1,0 +1,14 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: filesync
+  namespace: filesync
+spec:
+  ports:
+    - name: filestash
+      protocol: TCP
+      port: 8334
+      targetPort: 8334
+  type: ClusterIP
+  selector:
+    app: filesync
