@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: topolvm-lvmd-0
+  namespace: topolvm-system
+  labels:
+    idx: "0"
+    helm.sh/chart: topolvm-7.0.0
+    app.kubernetes.io/name: topolvm
+    app.kubernetes.io/instance: topolvm
+    app.kubernetes.io/version: "0.13.0"
+    app.kubernetes.io/managed-by: Helm
+data:
+  lvmd.yaml: |
+    socket-name: /run/topolvm/lvmd.sock
+    device-classes:
+      - default: true
+        name: ssd
+        spare-gb: 10
+        volume-group: csi-lvm
