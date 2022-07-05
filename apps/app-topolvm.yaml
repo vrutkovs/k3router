@@ -11,6 +11,8 @@ spec:
     path: apps/topolvm
     repoURL: 'https://github.com/vrutkovs/gitops-routernetes'
     targetRevision: HEAD
+    directory:
+      recurse: true
   syncPolicy:
     automated: {}
     syncOptions:
