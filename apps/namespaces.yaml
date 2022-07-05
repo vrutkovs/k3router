@@ -54,3 +54,10 @@ metadata:
   name: filesync
   labels:
     argocd.argoproj.io/namespace: gitops
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: home-assistant
+  labels:
+    argocd.argoproj.io/namespace: gitops

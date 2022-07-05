@@ -1,0 +1,25 @@
+apiVersion: helm.cattle.io/v1
+kind: HelmChart
+metadata:
+  name: home-assistant
+  namespace: home-assistant
+spec:
+  chart: home-assistant
+  repo: https://k8s-at-home.com/charts/
+  targetNamespace: home-assistant
+  version: 13.3.0
+  set:
+  valuesContent: |-
+    fullnameOverride: home-assistant
+    persistence:
+      config:
+        enabled: true
+    ingress:
+      main:
+        enabled: true
+        annotations:
+          nginx.org/websocket-services: home-assistant
+        hosts:
+          - host: home.192.168.0.100.nip.io
+            paths:
+              - path: /
