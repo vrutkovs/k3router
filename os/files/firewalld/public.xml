@@ -6,4 +6,6 @@
   <service name="http"/>
   <service name="https"/>
   <port port="9090" protocol="tcp"/>
+  <port port="6443" protocol="tcp"/>
+  <port port="10250" protocol="tcp"/>
 </zone>
