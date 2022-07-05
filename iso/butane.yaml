@@ -101,6 +101,7 @@ storage:
           /usr/bin/sleep 30
           /usr/local/bin/kubectl wait --timeout=24h --for=jsonpath='{.status.phase}'=Succeeded -n operators csv/$csv
           /usr/local/bin/install-custom-os.sh
+          /usr/local/bin/prepare-lvm.sh
     - path: /usr/local/bin/setup-loopback.sh
       mode: 0755
       contents:
@@ -120,6 +121,14 @@ storage:
           /usr/bin/rpm-ostree rebase --experimental ostree-unverified-registry:$(cat /etc/os-digest) --bypass-driver
           touch /etc/.k3s-installed
           reboot
+    - path: /usr/local/bin/prepare-lvm.sh
+      mode: 0755
+      contents:
+        inline: |
+          #!/bin/bash
+          set -e
+          /usr/sbin/pvcreate -ff -y /dev/nvme0n1p5
+          /usr/sbin/vgcreate csi-lvm /dev/nvme0n1p5
     - path: /usr/local/bin/bootstrap-argocd.sh
       mode: 0755
       contents:
