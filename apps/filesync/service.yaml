@@ -9,6 +9,10 @@ spec:
       protocol: TCP
       port: 8334
       targetPort: 8334
+    - name: syncthing
+      protocol: TCP
+      port: 8384
+      targetPort: 8384
   type: ClusterIP
   selector:
     app: filesync

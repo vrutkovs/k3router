@@ -18,3 +18,13 @@ spec:
               name: filestash
         path: /
         pathType: ImplementationSpecific
+  - host: sync.192.168.0.100.nip.io
+    http:
+      paths:
+      - backend:
+          service:
+            name: filesync
+            port:
+              name: syncthing
+        path: /
+        pathType: ImplementationSpecific
