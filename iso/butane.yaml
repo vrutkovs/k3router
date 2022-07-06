@@ -68,75 +68,28 @@ storage:
     - path: /usr/local/bin/install-k3s.sh
       mode: 0755
       contents:
-        inline: |
-          #!/bin/bash
-          set -e
-          /usr/local/bin/setup-loopback.sh
-          /usr/bin/rpm-ostree install --apply-live https://github.com/k3s-io/k3s-selinux/releases/download/v1.1.stable.1/k3s-selinux-1.1-1.el8.noarch.rpm
-          curl -sfL https://get.k3s.io | sh -s - --disable=traefik --disable=servicelb --flannel-backend=host-gw --flannel-iface=k3s-lo
-          /usr/bin/sleep 30
-          /usr/local/bin/kubectl apply -f https://github.com/rancher/system-upgrade-controller/releases/latest/download/system-upgrade-controller.yaml
-          /usr/local/bin/kubectl wait deployment -n system-upgrade system-upgrade-controller --for condition=Available=True --timeout=24h
-          /usr/local/bin/kubectl apply -f https://raw.githubusercontent.com/routernetes/routernetes/main/k3s/upgrade-plan.yaml
-          /usr/local/bin/install-olm.sh
+        local: ./files/install-k3s.sh
     - path: /usr/local/bin/install-olm.sh
       mode: 0755
       contents:
-        inline: |
-          #!/bin/bash
-          set -e
-          export ARCH=$(case $(uname -m) in x86_64) echo -n amd64 ;; aarch64) echo -n arm64 ;; *) echo -n $(uname -m) ;; esac)
-          export OS=$(uname | awk '{print tolower($0)}')
-          export OPERATOR_SDK_DL_URL=https://github.com/operator-framework/operator-sdk/releases/latest/download
-          curl -L -o /usr/local/bin/operator-sdk ${OPERATOR_SDK_DL_URL}/operator-sdk_${OS}_${ARCH}
-          chmod +x /usr/local/bin/operator-sdk
-          export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
-          /usr/local/bin/operator-sdk olm install
-          /usr/bin/sleep 30
-          /usr/local/bin/kubectl wait --timeout=24h --for=jsonpath='{.status.connectionState.lastObservedState}'=READY -n olm catalogsource/operatorhubio-catalog
-          /usr/local/bin/kubectl apply -f https://operatorhub.io/install/routernetes-operator.yaml
-          /usr/bin/sleep 30
-          /usr/local/bin/kubectl wait --timeout=24h --for=jsonpath='{.status.state}'=AtLatestKnown -n operators sub/my-routernetes-operator
-          csv=$(/usr/local/bin/kubectl get -n operators sub/my-routernetes-operator -o jsonpath='{.status.installedCSV}')
-          /usr/bin/sleep 30
-          /usr/local/bin/kubectl wait --timeout=24h --for=jsonpath='{.status.phase}'=Succeeded -n operators csv/$csv
-          /usr/local/bin/kubectl label namespace operators topolvm.cybozu.com/webhook=ignore
-          /usr/local/bin/install-custom-os.sh
-          /usr/local/bin/prepare-lvm.sh
+        local: ./files/install-olm.sh
     - path: /usr/local/bin/setup-loopback.sh
       mode: 0755
       contents:
-        inline: |
-          #!/bin/bash
-          set -e
-          /usr/bin/systemctl start NetworkManager
-          /usr/bin/nmcli connection add type dummy ifname k3s-lo ipv4.method manual ipv4.addresses 100.64.0.1/32 ipv6.method ignore connection.zone internal
-          /usr/bin/nmcli connection up dummy-k3s-lo
+        local: ./files/setup-loopback.sh
     - path: /usr/local/bin/install-custom-os.sh
       mode: 0755
       contents:
-        inline: |
-          #!/bin/bash
-          set -e
-          /usr/bin/skopeo inspect docker://quay.io/vrutkovs/routernetes-os:latest -n -f "{{.Name}}@{{.Digest}}" > /etc/os-digest
-          /usr/bin/rpm-ostree rebase --experimental ostree-unverified-registry:$(cat /etc/os-digest) --bypass-driver
-          touch /etc/.k3s-installed
-          reboot
+        local: ./files/install-custom-os.sh
     - path: /usr/local/bin/prepare-lvm.sh
       mode: 0755
       contents:
-        inline: |
-          #!/bin/bash
-          set -e
-          /usr/sbin/pvcreate -ff -y /dev/nvme0n1p5
-          /usr/sbin/vgcreate csi-lvm /dev/nvme0n1p5
+        local: ./files/prepare-lvm.sh
     - path: /usr/local/bin/bootstrap-argocd.sh
       mode: 0755
       contents:
-        inline: |
-          #!/bin/bash
-          set -e
-          export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
-          /usr/local/bin/kubectl label nodes --all node-role.kubernetes.io/master="" --overwrite
-          /usr/local/bin/kubectl apply -f /usr/share/gitops-bootstrap
-          touch /etc/.argocd-installed
+        local: ./files/bootstrap-argocd.sh
+    - path: /var/lib/rancher/k3s/agent/etc/containerd/config.toml.tmpl
+      mode: 0644
+      contents:
+        local: ./files/containerd.toml.tmpl
