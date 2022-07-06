@@ -1,0 +1,23 @@
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMAgent
+metadata:
+  name: metrics
+  namespace: openshift-monitoring
+spec:
+  arbitraryFSAccessThroughSMs: {}
+  extraArgs:
+    promscrape.streamParse: 'true'
+  image:
+    tag: v1.78.0
+  remoteWrite:
+    - url: 'http://vmsingle-metrics.openshift-monitoring.svc:8429/api/v1/write'
+  resources: {}
+  scrapeInterval: 25s
+  selectAllByDefault: true
+  inlineRelabelConfig:
+    - action: drop
+      regex: apiserver_request_.+
+    - action: drop
+      regex: etcd_request_.+
+    - action: drop
+      regex: container_fs_.+
