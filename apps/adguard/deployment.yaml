@@ -23,15 +23,12 @@ spec:
           privileged: true
         volumeMounts:
         - mountPath: /opt/adguardhome/work
-          name: work
+          name: data
+          subPath: work
         - mountPath: /opt/adguardhome/conf
-          name: conf
+          name: data
+          subPath: conf
       volumes:
-      - name: work
-        hostPath:
-          path: /srv/adguard/work
-          type: DirectoryOrCreate
-      - name: conf
-        hostPath:
-          path: /srv/adguard/conf
-          type: DirectoryOrCreate
+        - name: data
+          persistentVolumeClaim:
+            claimName: adguard
