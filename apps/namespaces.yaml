@@ -61,3 +61,10 @@ metadata:
   name: home-assistant
   labels:
     argocd.argoproj.io/namespace: gitops
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: cloudflare
+  labels:
+    argocd.argoproj.io/namespace: gitops
