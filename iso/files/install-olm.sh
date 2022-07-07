@@ -9,10 +9,4 @@ export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
 /usr/local/bin/operator-sdk olm install
 /usr/bin/sleep 30
 /usr/local/bin/kubectl wait --timeout=24h --for=jsonpath='{.status.connectionState.lastObservedState}'=READY -n olm catalogsource/operatorhubio-catalog
-/usr/local/bin/kubectl apply -f https://operatorhub.io/install/routernetes-operator.yaml
-/usr/bin/sleep 30
-/usr/local/bin/kubectl wait --timeout=24h --for=jsonpath='{.status.state}'=AtLatestKnown -n operators sub/my-routernetes-operator
-csv=$(/usr/local/bin/kubectl get -n operators sub/my-routernetes-operator -o jsonpath='{.status.installedCSV}')
-/usr/bin/sleep 30
-/usr/local/bin/kubectl wait --timeout=24h --for=jsonpath='{.status.phase}'=Succeeded -n operators csv/$csv
 /usr/local/bin/kubectl label namespace operators topolvm.cybozu.com/webhook=ignore
