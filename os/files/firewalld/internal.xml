@@ -2,8 +2,8 @@
 <zone>
   <short>Internal</short>
   <description>For use on internal networks. You mostly trust the other computers on the networks to not harm your computer. Only selected incoming connections are accepted.</description>
-  <port port="" protocol="tcp"/>
-  <port port="" protocol="udp"/>
+  <port port="0-65535" protocol="tcp"/>
+  <port port="0-65535" protocol="udp"/>
   <masquerade/>
   <rule family="ipv4">
     <masquerade/>

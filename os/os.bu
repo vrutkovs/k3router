@@ -84,3 +84,7 @@ storage:
       mode: 0644
       contents:
         local: ./firewalld/internal.xml
+    - path: /etc/firewalld/firewalld.conf
+      mode: 0644
+      contents:
+        local: ./firewalld/firewalld.conf
