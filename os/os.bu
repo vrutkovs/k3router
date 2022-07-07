@@ -18,7 +18,7 @@ systemd:
         [Service]
         RemainAfterExit=yes
         Type=oneshot
-        ExecStartPre=/usr/bin/sh -c 'skopeo inspect docker://quay.io/vrutkovs/routernetes-os:latest -n -f "{{.Name}}@{{.Digest}}" > /etc/os-digest'
+        ExecStartPre=/usr/bin/sh -c 'skopeo inspect docker://ghcr.io/vrutkovs/k3router:latest -n -f "{{.Name}}@{{.Digest}}" > /etc/os-digest'
         ExecStart=/usr/bin/sh -c "rpm-ostree rebase --experimental ostree-unverified-registry:$(cat /etc/os-digest) --bypass-driver"
         ExecStartPost=/usr/bin/systemctl --no-block reboot
         StandardOutput=kmsg+console
