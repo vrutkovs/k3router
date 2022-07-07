@@ -1,5 +1,7 @@
-Routernetes config
+k3router
 ====
+
+`k3router` allows you to contol your router using k8s API.
 
 This repo contains OS configurations and apps to run at a single node acting as a firewall/router.
 Applications are controlled by ArgoCD, OS configs are controlled by rpm-ostree.
