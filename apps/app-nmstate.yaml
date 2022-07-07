@@ -6,9 +6,9 @@ metadata:
 spec:
   destination:
     server: 'https://kubernetes.default.svc'
-  project: default
+  project: infra
   source:
-    path: apps/nmstate
+    path: apps/infra/nmstate
     repoURL: 'https://github.com/vrutkovs/k3router'
     targetRevision: HEAD
   syncPolicy:

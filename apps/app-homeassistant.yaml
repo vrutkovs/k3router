@@ -6,9 +6,9 @@ metadata:
 spec:
   destination:
     server: 'https://kubernetes.default.svc'
-  project: default
+  project: user
   source:
-    path: apps/home-assistant
+    path: apps/user/home-assistant
     repoURL: 'https://github.com/vrutkovs/k3router'
     targetRevision: HEAD
   syncPolicy:
