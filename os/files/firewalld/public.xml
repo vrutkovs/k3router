@@ -2,6 +2,7 @@
 <zone>
   <short>External</short>
   <description>For use on external networks. You do not trust the other computers on networks to not harm your computer. Only selected incoming connections are accepted.</description>
+  <service name="dns"/>
   <service name="ssh"/>
   <service name="http"/>
   <service name="https"/>
