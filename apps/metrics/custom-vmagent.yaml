@@ -3,6 +3,8 @@ kind: VMAgent
 metadata:
   name: metrics
   namespace: openshift-monitoring
+  annotations:
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
 spec:
   arbitraryFSAccessThroughSMs: {}
   extraArgs:
