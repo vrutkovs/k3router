@@ -19,7 +19,13 @@ spec:
   inlineRelabelConfig:
     - action: drop
       regex: apiserver_request_.+
+      sourceLabels:
+      - cluster=cluster-name
     - action: drop
       regex: etcd_request_.+
+      sourceLabels:
+      - cluster=cluster-name
     - action: drop
       regex: container_fs_.+
+      sourceLabels:
+      - cluster=cluster-name
