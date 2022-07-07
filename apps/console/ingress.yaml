@@ -18,3 +18,13 @@ spec:
               name: http
         path: /
         pathType: ImplementationSpecific
+  - host: console.k3router.ml
+    http:
+      paths:
+      - backend:
+          service:
+            name: openshift-console
+            port:
+              name: http
+        path: /
+        pathType: ImplementationSpecific
