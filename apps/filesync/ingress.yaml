@@ -28,3 +28,13 @@ spec:
               name: syncthing
         path: /
         pathType: ImplementationSpecific
+  - host: sync.k3router.ml
+    http:
+      paths:
+      - backend:
+          service:
+            name: filesync
+            port:
+              name: syncthing
+        path: /
+        pathType: ImplementationSpecific

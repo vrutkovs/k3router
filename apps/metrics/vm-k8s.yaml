@@ -32,6 +32,7 @@ spec:
           nginx.ingress.kubernetes.io/backend-protocol: HTTP
         hosts:
         - metrics.192.168.0.100.nip.io
+        - metrics.k3router.ml
     grafana:
       ingress:
         enabled: true
@@ -41,6 +42,7 @@ spec:
           nginx.ingress.kubernetes.io/backend-protocol: HTTP
         hosts:
         - grafana.192.168.0.100.nip.io
+        - grafana.k3router.ml
       grafana.ini:
         auth.anonymous:
           enabled: true

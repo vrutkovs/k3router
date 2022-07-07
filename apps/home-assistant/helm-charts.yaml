@@ -23,3 +23,6 @@ spec:
           - host: home.192.168.0.100.nip.io
             paths:
               - path: /
+          - host: home.k3router.ml
+            paths:
+              - path: /
