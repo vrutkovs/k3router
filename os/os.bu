@@ -46,6 +46,22 @@ systemd:
           ExecStart=
           # Add new Execstart with `-` prefix to ignore failure`
           ExecStart=-/usr/sbin/agetty --autologin core --noclear %I $TERM
+    - name: nm-set-zones.service
+      enabled: true
+      contents: |
+        [Unit]
+        After=network-online.target
+        Wants=network-online.target
+
+        [Service]
+        RemainAfterExit=yes
+        Type=oneshot
+        ExecStart=/usr/bin/nmcli c modify enp0s20f0u2 connection.zone internal
+        StandardOutput=kmsg+console
+        StandardError=kmsg+console
+
+        [Install]
+        WantedBy=multi-user.target
 storage:
   trees:
     - local: ./manifests
